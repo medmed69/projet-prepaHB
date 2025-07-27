@@ -10,7 +10,7 @@
         "128": "src/assets/logo-EEL.png"
     },
     "action": {
-        "default_popup": "popup.html",
+       
         "default_icon": {
             "16": "src/assets/logo-EEL.png",
             "48": "src/assets/logo-EEL.png",
