@@ -77,6 +77,10 @@ function nextBonusExercise() {
 
 function startTimer(duration) {
     timeLeft = duration;
+    if (timer) {
+        clearInterval(timer);
+    }
+    
     timer = setInterval(() => {
         if (isPaused) return;
         if (timeLeft <= 0) {
