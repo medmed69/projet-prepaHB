@@ -2,6 +2,7 @@
 
 const exercises = [
     { name: "Gainage Face", duration: 30 },
+    { name: "Pause", duration: 5 },
     { name: "Gainage Droite", duration: 30 },
     { name: "Gainage Gauche", duration: 30 },
     { name: "Gainage Dos", duration: 30 },
