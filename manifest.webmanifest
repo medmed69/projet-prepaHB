@@ -7,8 +7,11 @@
     "icons": {
         "16": "src/assets/logo-EEL.png",
         "48": "src/assets/logo-EEL.png",
-        "128": "src/assets/logo-EEL.png"
+        "128": "src/assets/logo-EEL.png",
+        "512": "src/assets/logo-EEL.png"
     },
+    "display":"fullscreen",
+    "start_url":"https://medmed69.github.io/projet-prepaHB/",
     "action": {
        
         "default_icon": {
