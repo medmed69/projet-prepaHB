@@ -80,7 +80,6 @@ function startTimer(duration) {
         } else {
             document.getElementById("timer").innerText = timeLeft;
             if (timeLeft == 6) {
-                playBeep();
                 announceNextExercise();
             }
             if (timeLeft == 4) {
