@@ -1,12 +1,12 @@
 const CACHE_NAME = 'my-pwa-cache-v1';
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/app.js',
-  '/style.css',
-  '/manifest.webmanifest',
-  '/src/assets/logo-EEL.png',
-  '/src/assets/beep.mp3',
+  '',
+  'index.html',
+  'app.js',
+  'style.css',
+  'manifest.webmanifest',
+  'src/assets/logo-EEL.png',
+  'src/assets/beep.mp3',
 ];
 
 // Installation : on met les fichiers en cache
@@ -41,7 +41,7 @@ self.addEventListener('fetch', event => {
       .catch(() => {
         // Optionnel : page de repli si offline et non trouvé
         if (event.request.destination === 'document') {
-          return caches.match('/offline.html');
+          return caches.match('offline.html');
         }
       })
   );
