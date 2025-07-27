@@ -1,9 +1,9 @@
 // src/app.js
 
 const exercises = [
-    { name: "Gainage Face",phono: "Guènage Face", duration: 5 },
-    { name: "Gainage droite",phono: "Guènage droite", duration: 5 },
-    { name: "Gainage gauche",phono: "Guènage gauche", duration: 5 },
+    { name: "Gainage Face",phono: "Guènage Face", duration: 30 },
+    { name: "Gainage droite",phono: "Guènage droite", duration: 30 },
+    { name: "Gainage gauche",phono: "Guènage gauche", duration: 30 },
     { name: "Gainage dos",phono: "Guènage D'eau", duration: 30 },
     { name: "Pompes",phono:"Pompes", duration: 15 },
     { name: "Dips",phono:"Dips", duration: 15 },
