@@ -5,7 +5,7 @@ const ASSETS_TO_CACHE = [
   '/app.js',
   '/style.css',
   '/manifest.webmanifest',
-  '/src/assets/logo-EEL.jpg',
+  '/src/assets/logo-EEL.png',
   '/src/assets/beep.mp3',
 ];
 

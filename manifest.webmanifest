@@ -18,10 +18,7 @@
         }
     },
     "permissions": [
-        "storage",
-        "notifications",
-        "activeTab",
-        "scripting"
+        "storage"
     ],
     "background": {
         "service_worker": "service-worker.js"
