@@ -122,3 +122,5 @@ function endSession() {
 }
 
 document.getElementById("startButton").addEventListener("click", startSession);
+window.speechSynthesis.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
+window.speechSynthesis.lang = 'fr-FR';
