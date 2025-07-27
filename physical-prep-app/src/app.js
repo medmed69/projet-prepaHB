@@ -79,9 +79,12 @@ function startTimer(duration) {
             nextExercise();
         } else {
             document.getElementById("timer").innerText = timeLeft;
-            if (timeLeft <= 5) {
+            if (timeLeft = 6) {
                 playBeep();
                 announceNextExercise();
+            }
+            if (timeLeft = 4) {
+                playBeep();
             }
             timeLeft--;
         }
@@ -104,7 +107,7 @@ function announceNextExercise() {
 }
 
 function playBeep() {
-    const beep = new Audio('assets/beep.mp3');
+    const beep = new Audio('src/assets/beep.mp3');
     beep.play();
 }
 
