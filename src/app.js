@@ -1,7 +1,7 @@
 // src/app.js
 
 const exercises = [
-    { name: "Gainage Face", duration: 30 },
+    { name: "Gainaage Face", duration: 30 },
     { name: "Pause", duration: 5 },
     { name: "Gainage Droite", duration: 30 },
     { name: "Gainage Gauche", duration: 30 },
@@ -30,6 +30,7 @@ let isPaused = false;
 let timer;
 
 function startSession() {
+
     totalBlocks = parseInt(document.getElementById("blocks").value);
     totalGainage = parseInt(document.getElementById("gainage").value);
     if (totalGainage > totalBlocks) {
@@ -93,8 +94,9 @@ function startTimer(duration) {
 
 function announceExercise(exercise) {
     const speech = new SpeechSynthesisUtterance(`${exercise.name} pour ${exercise.duration} secondes`);
-    speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name === 'Microsoft Paul - French (France)');
+    speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
     speech.lang = 'fr-FR';
+
     window.speechSynthesis.speak(speech);
 }
 
@@ -102,9 +104,9 @@ function announceNextExercise() {
     const nextExercise = exercises[currentExerciseIndex] || bonusExercises[currentExerciseIndex];
     if (nextExercise) {
         const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.name} pour ${nextExercise.duration} secondes`);
-        speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name === 'Microsoft Paul - French (France)');
+        speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
         speech.lang = 'fr-FR';
-        
+
         window.speechSynthesis.speak(speech);
     }
 }
