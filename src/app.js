@@ -1,25 +1,24 @@
 // src/app.js
 
 const exercises = [
-    { name: "Gainaage Face", duration: 30 },
-    { name: "Pause", duration: 5 },
-    { name: "Gainage Droite", duration: 30 },
-    { name: "Gainage Gauche", duration: 30 },
-    { name: "Gainage Dos", duration: 30 },
-    { name: "Pompes", duration: 15 },
-    { name: "Dips", duration: 15 },
-    { name: "Abdos", duration: 10, repetitions: [10, 20, 30, 20, 10] },
-    { name: "Abdos Toucher les Pieds", duration: 10, repetitions: [10, 20, 30, 20, 10] },
-    { name: "Abdos Rotation Haut du Corps", duration: 10, repetitions: [10, 20, 30, 20, 10] },
-    { name: "Superman Actif", duration: 20 },
-    { name: "Squat Sauté", duration: 15 }
+    { name: "Gainage Face",phono: "Guènage Face", duration: 5 },
+    { name: "Gainage droite",phono: "Guènage droite", duration: 5 },
+    { name: "Gainage gauche",phono: "Guènage gauche", duration: 5 },
+    { name: "Gainage dos",phono: "Guènage D'eau", duration: 30 },
+    { name: "Pompes",phono:"Pompes", duration: 15 },
+    { name: "Dips",phono:"Dips", duration: 15 },
+    { name: "Abdos",phono:"Abdos", duration: 10, repetitions: [10, 20, 30, 20, 10] },
+    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: 10, repetitions: [10, 20, 30, 20, 10] },
+    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 10, repetitions: [10, 20, 30, 20, 10] },
+    { name: "Superman Actif",phono:"Superman Actif", duration: 20 },
+    { name: "Squat Sauté",phono:"Squat Sauté", duration: 15 }
 ];
 
 const bonusExercises = [
-    { name: "Gainage Face", duration: 30 },
-    { name: "Gainage Droite", duration: 30 },
-    { name: "Gainage Gauche", duration: 30 },
-    { name: "Gainage Dos", duration: 30 }
+     { name: "Gainage Face",phono: "Guènage Face", duration: 30 },
+    { name: "Gainage droite",phono: "Guènage droite", duration: 30 },
+    { name: "Gainage gauche",phono: "Guènage gauche", duration: 30 },
+    { name: "Gainage dos",phono: "Guènage dos", duration: 30 },
 ];
 
 let currentExerciseIndex = 0;
@@ -28,6 +27,7 @@ let totalBlocks = 0;
 let totalGainage = 0;
 let isPaused = false;
 let timer;
+let timeLeft;
 
 function startSession() {
 
@@ -38,6 +38,8 @@ function startSession() {
     }
     currentBlock = 0;
     currentExerciseIndex = 0;
+    document.getElementById("settings").className  = "hidden";
+    document.getElementById("exerciseDisplay").className = "visible";
     nextExercise();
 }
 
@@ -46,6 +48,7 @@ function nextExercise() {
         if (currentExerciseIndex < exercises.length) {
             const exercise = exercises[currentExerciseIndex];
             announceExercise(exercise);
+            document.getElementById("exerciseName").innerText = exercise.name;
             startTimer(exercise.duration);
             currentExerciseIndex++;
         } else {
@@ -73,7 +76,7 @@ function nextBonusExercise() {
 }
 
 function startTimer(duration) {
-    let timeLeft = duration;
+    timeLeft = duration;
     timer = setInterval(() => {
         if (isPaused) return;
         if (timeLeft <= 0) {
@@ -93,7 +96,7 @@ function startTimer(duration) {
 }
 
 function announceExercise(exercise) {
-    const speech = new SpeechSynthesisUtterance(`${exercise.name} pour ${exercise.duration} secondes`);
+    const speech = new SpeechSynthesisUtterance(`${exercise.phono} pour ${exercise.duration} secondes`);
     speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
     speech.lang = 'fr-FR';
 
@@ -103,7 +106,7 @@ function announceExercise(exercise) {
 function announceNextExercise() {
     const nextExercise = exercises[currentExerciseIndex] || bonusExercises[currentExerciseIndex];
     if (nextExercise) {
-        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.name} pour ${nextExercise.duration} secondes`);
+        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.phono} pour ${nextExercise.duration} secondes`);
         speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
         speech.lang = 'fr-FR';
 
@@ -122,5 +125,13 @@ function endSession() {
 }
 
 document.getElementById("startButton").addEventListener("click", startSession);
+document.getElementById("stopButton").onclick = function() {
+    isPaused = !isPaused;
+    this.innerText = isPaused ? "Reprendre" : "Pause";
+    if (!isPaused) {
+        startTimer(timeLeft);
+    }
+};
+document.getElementById("skipButton").addEventListener("click", nextExercise);
 window.speechSynthesis.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
 window.speechSynthesis.lang = 'fr-FR';
