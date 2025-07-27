@@ -93,6 +93,7 @@ function startTimer(duration) {
 
 function announceExercise(exercise) {
     const speech = new SpeechSynthesisUtterance(`${exercise.name} pour ${exercise.duration} secondes`);
+    speech.voice = 'urn:moz-tts:sapi:Microsoft Paul - French (France)?fr-FR'
     speech.lang = 'fr-FR';
     window.speechSynthesis.speak(speech);
 }
