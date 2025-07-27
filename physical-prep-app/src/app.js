@@ -93,7 +93,7 @@ function startTimer(duration) {
 
 function announceExercise(exercise) {
     const speech = new SpeechSynthesisUtterance(`${exercise.name} pour ${exercise.duration} secondes`);
-    speech.voice = 'urn:moz-tts:sapi:Microsoft Paul - French (France)?fr-FR'
+    speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name === 'Microsoft Paul - French (France)');
     speech.lang = 'fr-FR';
     window.speechSynthesis.speak(speech);
 }
@@ -102,7 +102,9 @@ function announceNextExercise() {
     const nextExercise = exercises[currentExerciseIndex] || bonusExercises[currentExerciseIndex];
     if (nextExercise) {
         const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.name} pour ${nextExercise.duration} secondes`);
+        speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name === 'Microsoft Paul - French (France)');
         speech.lang = 'fr-FR';
+        
         window.speechSynthesis.speak(speech);
     }
 }
