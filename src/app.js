@@ -7,18 +7,20 @@ const exercises = [
     { name: "Gainage dos",phono: "Guènage D'eau", duration: 30 },
     { name: "Pompes",phono:"Pompes", duration: 15 },
     { name: "Dips",phono:"Dips", duration: 15 },
-    { name: "Abdos",phono:"Abdos", duration: 10, repetitions: [10, 20, 30, 20, 10] },
+    { name: "Abdos",phono:"Abdos", duration: "10 répétition", repetitions: [10, 20, 30, 20, 10] },
     { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: 10, repetitions: [10, 20, 30, 20, 10] },
     { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 10, repetitions: [10, 20, 30, 20, 10] },
     { name: "Superman Actif",phono:"Superman Actif", duration: 20 },
-    { name: "Squat Sauté",phono:"Squat Sauté", duration: 15 }
+    { name: "Squat Sauté",phono:"Squat Sauté", duration: 15 },
+    { name: "Pause",phono:"pause", duration: 60 } // Pause de 1 minute entre les exercices
 ];
 
 const bonusExercises = [
-     { name: "Gainage Face",phono: "Guènage Face", duration: 30 },
+    { name: "Gainage Face",phono: "Guènage Face", duration: 30 },
     { name: "Gainage droite",phono: "Guènage droite", duration: 30 },
     { name: "Gainage gauche",phono: "Guènage gauche", duration: 30 },
-    { name: "Gainage dos",phono: "Guènage dos", duration: 30 },
+    { name: "Gainage dos",phono: "Guènage D'eau", duration: 30 }
+    
 ];
 
 let currentExerciseIndex = 0;
@@ -134,9 +136,14 @@ document.getElementById("stopButton").onclick = function() {
     this.innerText = isPaused ? "Reprendre" : "Pause";
     if (!isPaused) {
         startTimer(timeLeft);
+        document.getElementById("stopButton").className = "resumed";
+    }else
+    {
+        document.getElementById("stopButton").className = "paused"; 
     }
 };
 document.getElementById("skipButton").addEventListener("click", nextExercise);
+
 window.speechSynthesis.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
 window.speechSynthesis.lang = 'fr-FR';
 
