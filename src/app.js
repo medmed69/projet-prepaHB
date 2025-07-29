@@ -174,6 +174,142 @@ document.getElementById("stopButton").onclick = function() {
 };
 document.getElementById("skipButton").addEventListener("click", nextExercise);
 
+
+// Exemple de liste à remplir
+const exercice_proprio = [
+    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 repetition",rep:1 }, 
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 repetition",rep:1 }, 
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 repetition",rep:1 }, 
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 repetition",rep:1 },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Ouverture d'épaule (20 mouvement par bras) x 3 ",
+        phono: "Ouverture d'épaule", duration: 240, dura_phono: "3 fois 20 mouvement par Bras",rep:1 },
+    { name: "Travaille tenue de balle",phono: "Travaille tenue de balle", duration: 240, dura_phono: "3 fois 20 mouvement par Bras ",rep:1 },
+    { name: "Travail de passe (feintes puis tire) 2 series 20",
+        phono: "Travail de passe", duration: 240, dura_phono: "2 series de 20 mouvement",rep:1 },
+    
+   
+
+    // { name: "Sur un pied, yeux fermés", duration: 30, phono: "Sur un pied, yeux fermés", dura_phono: "30 secondes" },
+    // { name: "Jonglage avec balle", duration: 60, phono: "Jonglage avec balle", dura_phono: "1 minute" },
+    // ...
+];
+
+let proprioIndex = 0;
+let proprioTimerInterval = null;
+let proprioPaused = false;
+
+function startProprioSession() {
+    proprioIndex = 0;
+    document.getElementById("startProprioBtn").style.display = "none";
+    document.getElementById("proprioDisplay").classList.remove("hidden");
+    nextProprioExercise();
+}
+
+function nextProprioExercise() {
+    if (proprioIndex >= exercice_proprio.length) {
+        endProprioSession();
+        return;
+    }
+    const ex = exercice_proprio[proprioIndex];
+    document.getElementById("proprioName").innerText = ex.name;
+    let timeLeft = ex.duration;
+    if (ex.rep == 1) {
+        document.getElementById("proprioTimer").innerText = ex.dura_phono;
+    } else {
+        document.getElementById("proprioTimer").innerText = timeLeft + "s";
+    announceExercise(ex);}
+
+    clearInterval(proprioTimerInterval);
+    proprioPaused = false;
+    document.getElementById("pauseProprioBtn").innerText = "Pause";
+    document.getElementById("pauseProprioBtn").className = "resumed";
+    proprioTimerInterval = setInterval(() => {
+        if (proprioPaused) return;
+        timeLeft--;
+        if (ex.rep == 1) {
+        document.getElementById("proprioTimer").innerText = ex.dura_phono;
+    }   else {
+        document.getElementById("proprioTimer").innerText = timeLeft + "s";}
+        if (timeLeft <= 0) {
+            clearInterval(proprioTimerInterval);
+            proprioIndex++;
+            nextProprioExercise();
+        }
+    }, 1000);
+}
+
+// Bouton pause proprio
+document.addEventListener("DOMContentLoaded", function() {
+    const homePage = document.getElementById("homePage");
+    const mainApp = document.getElementById("mainApp");
+    const propApp = document.getElementById("propApp");
+    const prepBtn = document.getElementById("startPrepBtn");
+    const propBtn = document.getElementById("startPropBtn");
+    const backHome1 = document.getElementById("backHome1");
+    const backHome2 = document.getElementById("backHome2");
+    const startProprioBtn = document.getElementById("startProprioBtn");
+    const skipProprioBtn = document.getElementById("skipProprioBtn");
+    const pauseProprioBtn = document.getElementById("pauseProprioBtn");
+
+    if (prepBtn) prepBtn.onclick = function() {
+        homePage.style.display = "none";
+        mainApp.style.display = "";
+        propApp.style.display = "none";
+    };
+    if (propBtn) propBtn.onclick = function() {
+        homePage.style.display = "none";
+        mainApp.style.display = "none";
+        propApp.style.display = "";
+    };
+    if (backHome1) backHome1.onclick = function() {
+        homePage.style.display = "";
+        mainApp.style.display = "none";
+        propApp.style.display = "none";
+    };
+    if (backHome2) backHome2.onclick = function() {
+        homePage.style.display = "";
+        mainApp.style.display = "none";
+        propApp.style.display = "none";
+    };
+    if (startProprioBtn) startProprioBtn.onclick = startProprioSession;
+    if (skipProprioBtn) skipProprioBtn.onclick = function() {
+        clearInterval(proprioTimerInterval);
+        proprioIndex++;
+        nextProprioExercise();
+    };
+    if (pauseProprioBtn) pauseProprioBtn.onclick = function() {
+        proprioPaused = !proprioPaused;
+        this.innerText = proprioPaused ? "Reprendre" : "Pause";
+        this.className = proprioPaused ? "paused" : "resumed";
+    };
+});
+
 window.speechSynthesis.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
 window.speechSynthesis.lang = 'fr-FR';
 

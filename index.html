@@ -6,29 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programme de Préparation Physique</title>
     <link rel="stylesheet" href="src/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#1976d2">
-    <link rel="icon" href="src/assets/logo-EEL.png" sizes="192x192">
-    <link rel="apple-touch-icon" href="src/assets/logo-EEL.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="description" content="Programme de préparation physique pour les athlètes de l'EEL. Suivez votre progression et améliorez vos performances.">
-    <meta name="keywords" content="préparation physique, entraînement, athlètes, EEL, exercices, gainage, performance">
-    <meta name="author" content="EEL Team">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="EEL Préparation Physique">
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="homePage">
+        <h1>Bienvenue</h1>
+        <button id="startPrepBtn">Préparation Physique</button>
+        <button id="startPropBtn">Proprioception & Manipulation de balle</button>
+    </div>
+
+    <div class="container" id="mainApp" style="display:none;">
         <h1>Prépa Physique -17 EEL 2025/26</h1>
+        <h1>Renfo</h1>
         <div id="settings">
             <label for="blocks">Nombre de blocs:</label>
             <input type="number" id="blocks" min="1" value="1">
             <label for="gainage">Nombre de séries de gainage:</label>
             <input type="number" id="gainage" min="1" value="1">
-            <button id="startButton" >Démarrer la séance</button>
+            <button id="startButton">Démarrer la séance</button>
         </div>
         <div id="exerciseDisplay" class="hidden">
             <h2 id="exerciseName"></h2>
@@ -39,11 +34,22 @@
         <div id="progressBarContainer" class="hidden">
             <div id="progressBar"></div>
         </div>
+        <button id="backHome1" style="margin-top:24px;">Retour accueil</button>
     </div>
- 
+
+    <div class="container" id="propApp" style="display:none;">
+        <h1>Proprioception & Manipulation de balle</h1>
+        <button id="startProprioBtn">Commencer la proprio</button>
+        <div id="proprioDisplay" class="hidden">
+            <h2 id="proprioName"></h2>
+            <p id="proprioTimer" class="timer"></p>
+            <button id="skipProprioBtn">Passer l'exercice</button>
+            <button id="pauseProprioBtn" class="resumed">Pause</button>
+        </div>
+        <button id="backHome2" style="margin-top:24px;">Retour accueil</button>
+    </div>
 
     <script src="src/app.js"></script>
-
 </body>
 
 </html>

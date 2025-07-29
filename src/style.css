@@ -37,7 +37,7 @@ h1 {
     font-weight: 600;
 }
 
-.timer, #timer {
+#proprioTimer.timer, .timer, #timer {
     font-size: 3.5em;
     color: #e74c3c;
     text-align: center;
