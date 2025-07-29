@@ -1,25 +1,27 @@
 // src/app.js
 
 const exercises = [
+    { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono: "30 secondes" },
+    { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:"30 secondes" },
+    { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: "30 secondes" },
+    { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:"30 secondes" },
+    { name: "Pompes", phono:"Pompes", duration:20,dura_phono:"10 repetition", repetitions: 1},
+    { name: "Dips",phono:"Dips", duration: 20 ,dura_phono:"10 repetition", repetitions: 1},
+    { name: "Abdos", phono:"Abdos", duration: 20,dura_phono:"10 repetition" , repetitions: 1 },
+    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: "20 repetition",dura_phono:0, repetitions: 1 },
+    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: "30 repetition",dura_phono:0, repetitions: 1 },
+    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: "20 repetition",dura_phono:0, repetitions: 1 },
+    { name: "Abdos", phono:"Abdos", duration: 20,dura_phono:"10 repetition" , repetitions: 1 },
+    { name: "Superman Actif", phono:"Superman Actif", duration: 30 ,dura_phono:"30 secondes",},
+    { name: "Squat Sauté", phono:"Squat Sauté", duration: 15 ,dura_phono:"15 secondes",},
+    { name: "Pause", phono:"pause", duration: 90 ,dura_phono:"1,5 minutes"} // Pause de 1 minute entre les exercices
+];
+
+const bonusExercises = [
     { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono:30 },
     { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:30 },
     { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: 30 },
     { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:30 },
-    { name: "Pompes", phono:"Pompes", duration:20,dura_phono:null, repetitions: 10},
-    { name: "Dips", phono:"Dips", duration: 20 ,dura_phono:null, repetitions: 10},
-    { name: "Abdos",phono:"Abdos", duration: 20,dura_phono:null , repetitions: [10, 20, 30, 20, 10] },
-    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: 10,dura_phono:30, repetitions: [10, 20, 30, 20, 10] },
-    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 10,dura_phono:30, repetitions: [10, 20, 30, 20, 10] },
-    { name: "Superman Actif",phono:"Superman Actif", duration: 20 ,dura_phono:20,},
-    { name: "Squat Sauté",phono:"Squat Sauté", duration: 15 ,dura_phono:15},
-    { name: "Pause",phono:"pause", duration: 60 ,dura_phono:60} // Pause de 1 minute entre les exercices
-];
-
-const bonusExercises = [
-    { name: "Gainage Face",phono: "Guènage Face", duration: 30 },
-    { name: "Gainage droite",phono: "Guènage droite", duration: 30 },
-    { name: "Gainage gauche",phono: "Guènage gauche", duration: 30 },
-    { name: "Gainage dos",phono: "Guènage D'eau", duration: 30 }
     
 ];
 
@@ -30,22 +32,28 @@ let totalGainage = 0;
 let isPaused = false;
 let timer;
 let timeLeft;
+let speech;
+let vbonus = 0; // Variable pour le bonus de gainage
+let dura_phono;
 
 function startSession() {
 
     totalBlocks = parseInt(document.getElementById("blocks").value);
     totalGainage = parseInt(document.getElementById("gainage").value);
     if (totalGainage > totalBlocks) {
-        totalBlocks += 1; // Add bonus block
+        vbonus += 1; // Add bonus block
     }
     currentBlock = 0;
     currentExerciseIndex = 0;
     document.getElementById("settings").className  = "hidden";
     document.getElementById("exerciseDisplay").className = "visible";
+    document.getElementById("progressBarContainer").className = "";
+    updateProgressBar();
     nextExercise();
 }
 
 function nextExercise() {
+    updateProgressBar();
     if (currentBlock < totalBlocks) {
         if (currentExerciseIndex < exercises.length) {
             const exercise = exercises[currentExerciseIndex];
@@ -58,7 +66,7 @@ function nextExercise() {
             currentExerciseIndex = 0;
             nextExercise();
         }
-    } else if (totalGainage > 0) {
+    } else if (currentBlock= totalBlocks && vbonus > 0) {
         currentExerciseIndex = 0;
         nextBonusExercise();
     } else {
@@ -69,8 +77,9 @@ function nextExercise() {
 function nextBonusExercise() {
     if (currentExerciseIndex < bonusExercises.length) {
         const exercise = bonusExercises[currentExerciseIndex];
-        announceExercise(exercise);
-        startTimer(exercise.duration);
+        announceExercise(bonusExercises);
+        document.getElementById("exerciseName").innerText = bonusExercises.name;
+        startTimer(bonusExercises.duration);
         currentExerciseIndex++;
     } else {
         endSession();
@@ -89,12 +98,10 @@ function startTimer(duration) {
             clearInterval(timer);
             nextExercise();
         } else {
-            if (exercise.dura_phono === null) {
-                document.getElementById("timer").innerText = exercise.repetitions;
+            if (exercises[currentExerciseIndex - 1].repetitions == 1){document.getElementById("timer").innerText = exercises[currentExerciseIndex - 1].dura_phono;
             }
-            else {
-                document.getElementById("timer").innerText = timeLeft;
-            }
+            else {document.getElementById("timer").innerText = timeLeft;}
+            
 
             if (timeLeft == 6) {
                 announceNextExercise();
@@ -108,22 +115,18 @@ function startTimer(duration) {
 }
 
 function announceExercise(exercise) {
-    if (exercise.dura_phono === null) {speech = new SpeechSynthesisUtterance(`${exercise.phono} pour ${exercise.repetitions}repetitions`);} 
-        
-    else {speech = new SpeechSynthesisUtterance(`${exercise.phono} pour ${exercise.duration}secondes`);} 
+    speech = new SpeechSynthesisUtterance(`${exercise.phono} pour ${exercise.dura_phono}`); 
     speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
     speech.lang = 'fr-FR';
-
     window.speechSynthesis.speak(speech);
 }
 
 function announceNextExercise() {
     const nextExercise = exercises[currentExerciseIndex] || bonusExercises[currentExerciseIndex];
     if (nextExercise) {
-        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.phono} pour ${nextExercise.duration} secondes`);
+        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.phono} pour ${nextExercise.dura_phonoS} `);
         speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
         speech.lang = 'fr-FR';
-
         window.speechSynthesis.speak(speech);
     }
 }
@@ -136,6 +139,25 @@ function playBeep() {
 function endSession() {
     clearInterval(timer);
     alert("Séance terminée !");
+}
+
+function updateProgressBar() {
+    // Nombre total d'exercices à faire (hors pauses)
+    let total = (totalBlocks * exercises.length);
+    // Si bonus à faire (plus de séries de gainage que de blocs)
+    if (totalGainage > totalBlocks - 1) total += bonusExercises.length;
+
+    // Calcul du nombre d'exercices déjà faits
+    let done;
+    if (currentBlock < totalBlocks) {
+        done = (currentBlock * exercises.length) + currentExerciseIndex;
+    } else {
+        // On est dans le bloc bonus
+        done = (totalBlocks * exercises.length) + currentExerciseIndex;
+    }
+    // Clamp pour éviter de dépasser 100%
+    let percent = Math.min(100, Math.round((done / total) * 100));
+    document.getElementById("progressBar").style.width = percent + "%";
 }
 
 document.getElementById("startButton").addEventListener("click", startSession);

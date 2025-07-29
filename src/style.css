@@ -125,6 +125,22 @@ input[type="number"]:focus {
     display: none !important;
 }
 
+#progressBarContainer {
+    width: 100%;
+    background: #e0eafc;
+    border-radius: 8px;
+    margin: 18px 0 10px 0;
+    height: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+}
+#progressBar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2980b9 0%, #6dd5fa 100%);
+    transition: width 0.4s;
+}
+
 @media (max-width: 600px) {
     .container, #app {
         max-width: 98vw;
