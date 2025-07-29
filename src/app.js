@@ -51,6 +51,8 @@ function startSession() {
     document.getElementById("progressBarContainer").className = "";
     updateProgressBar();
     nextExercise();
+    document.getElementById("stopSessionBtn").style.display = "";
+    document.getElementById("backHome1").style.display = "none";
 }
 
 function nextExercise() {
@@ -241,6 +243,8 @@ function startProprioSession() {
     proprioIndex = 0;
     document.getElementById("startProprioBtn").style.display = "none";
     document.getElementById("proprioDisplay").classList.remove("hidden");
+    document.getElementById("stopProprioSessionBtn").style.display = "";
+    document.getElementById("backHome2").style.display = "none";
     nextProprioExercise();
 }
 
@@ -320,6 +324,27 @@ document.addEventListener("DOMContentLoaded", function() {
         proprioPaused = !proprioPaused;
         this.innerText = proprioPaused ? "Reprendre" : "Pause";
         this.className = proprioPaused ? "paused" : "resumed";
+    };
+
+    // Arrêter la session renfo
+    const stopSessionBtn = document.getElementById("stopSessionBtn");
+    if (stopSessionBtn) stopSessionBtn.onclick = function() {
+        document.getElementById("settings").className = "";
+        document.getElementById("exerciseDisplay").className = "hidden";
+        document.getElementById("progressBarContainer").className = "hidden";
+        this.style.display = "none";
+        document.getElementById("backHome1").style.display = "";
+        if (window.timer) clearInterval(window.timer);
+    };
+
+    // Arrêter la session proprio
+    const stopProprioSessionBtn = document.getElementById("stopProprioSessionBtn");
+    if (stopProprioSessionBtn) stopProprioSessionBtn.onclick = function() {
+        document.getElementById("proprioDisplay").classList.add("hidden");
+        document.getElementById("startProprioBtn").style.display = "";
+        this.style.display = "none";
+        document.getElementById("backHome2").style.display = "";
+        if (window.proprioTimerInterval) clearInterval(window.proprioTimerInterval);
     };
 });
 
