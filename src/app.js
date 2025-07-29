@@ -1,20 +1,20 @@
 // src/app.js
 
 const exercises = [
-    { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono: "30 secondes" },
-    { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:"30 secondes" },
-    { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: "30 secondes" },
-    { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:"30 secondes" },
-    { name: "Pompes", phono:"Pompes", duration:20,dura_phono:"10 répétition", repetitions: 1},
-    { name: "Dips",phono:"Dips", duration: 20 ,dura_phono:"10 répétition", repetitions: 1},
-    { name: "Abdos", phono:"Abdos", duration: 20,dura_phono:"10 répétition" , repetitions: 1 },
-    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: "20 répétition",dura_phono:0, repetitions: 1 },
-    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: "30 répétition",dura_phono:0, repetitions: 1 },
-    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration: "20 répétition",dura_phono:0, repetitions: 1 },
-    { name: "Abdos", phono:"Abdos", duration: 20,dura_phono:"10 répétition" , repetitions: 1 },
-    { name: "Superman Actif", phono:"Superman Actif", duration: 30 ,dura_phono:"30 secondes",},
-    { name: "Squat Sauté", phono:"Squat Sauté", duration: 15 ,dura_phono:"15 secondes",},
-    { name: "Pause", phono:"pause", duration: 90 ,dura_phono:"1,5 minutes"} // Pause de 1 minute entre les exercices
+    { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono: "30 secondes", rep: false},
+    { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:"30 secondes", rep: false },
+    { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: "30 secondes", rep: false },
+    { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:"30 secondes", rep: false },
+    { name: "Pompes", phono:"Pompes", duration:20,dura_phono:"10 répétitions", rep: true},
+    { name: "Dips",phono:"Dips", duration: 20 ,dura_phono:"10 répétitions", rep: true},
+    { name: "Abdos", phono:"Abdos", duration: 60,dura_phono:"10 répétitions" , rep: true },
+    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration:60 ,dura_phono:"20 répétitions", rep: true},
+    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 90 ,dura_phono:"30 répétitions", rereppetitions: true },
+    { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration:60 ,dura_phono:"20 répétitions", rep: true },
+    { name: "Abdos", phono:"Abdos", duration: 60 ,dura_phono:"10 répétitions" , rep: true },
+    { name: "Superman Actif", phono:"Superman Actif", duration: 30 ,dura_phono:"30 secondes", rep: false},
+    { name: "Squat Sauté", phono:"Squat Sauté", duration: 15 ,dura_phono:"15 secondes", rep: false},
+    { name: "Pause", phono:"pause", duration: 90 ,dura_phono:"1,5 minutes", rep: false} // Pause de 1 minute entre les exercices
 ];
 
 const bonusExercises = [
@@ -35,7 +35,8 @@ let timeLeft;
 let speech;
 let vbonus = 0; // Variable pour le bonus de gainage
 let dura_phono;
-
+let ex;
+let rep;
 function startSession() {
 
     totalBlocks = parseInt(document.getElementById("blocks").value);
@@ -54,6 +55,12 @@ function startSession() {
 
 function nextExercise() {
     updateProgressBar();
+    if (exercises[currentExerciseIndex].rep || exercice_proprio[currentExerciseIndex].rep ||bonusExercises[currentExerciseIndex].rep) {
+        document.getElementById("skipButton").innerText = "j'ai fini les répétitions";
+    }else{
+        document.getElementById("skipButton").innerText = "passer l'exercice";
+        }
+    
     if (currentBlock < totalBlocks) {
         if (currentExerciseIndex < exercises.length) {
             const exercise = exercises[currentExerciseIndex];
@@ -98,7 +105,7 @@ function startTimer(duration) {
             clearInterval(timer);
             nextExercise();
         } else {
-            if (exercises[currentExerciseIndex - 1].repetitions == 1){document.getElementById("timer").innerText = exercises[currentExerciseIndex - 1].dura_phono;
+            if (exercises[currentExerciseIndex - 1].rep){document.getElementById("timer").innerText = exercises[currentExerciseIndex - 1].dura_phono;
             }
             else {document.getElementById("timer").innerText = timeLeft;}
             
@@ -116,7 +123,9 @@ function startTimer(duration) {
 
 function announceExercise(exercise) {
     
-    
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
     speech = new SpeechSynthesisUtterance(`${exercise.phono} pour ${exercise.dura_phono}`); 
     speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
     speech.lang = 'fr-FR';
@@ -167,6 +176,7 @@ function updateProgressBar() {
 document.getElementById("startButton").addEventListener("click", startSession);
 document.getElementById("stopButton").onclick = function() {
     isPaused = !isPaused;
+    
     this.innerText = isPaused ? "Reprendre" : "Pause";
     if (!isPaused) {
         startTimer(timeLeft);
@@ -181,41 +191,40 @@ document.getElementById("skipButton").addEventListener("click", nextExercise);
 
 // Exemple de liste à remplir
 const exercice_proprio = [
-    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
+    { name: "Equilibre pied décalé (droite)", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Equilibre pied décalé (gauche)", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:false },
     { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Equilibre pied décalé", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:0 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:1 }, 
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:1 }, 
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:1 }, 
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Travail d'appuis", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 répétition",rep:1 },
-    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:0 },
-    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
-    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
-    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
-    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
-    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:0 },
-    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:0 },
+    { name: "Equilibre pied décalé (droite)", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Equilibre pied décalé (gauche)", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Equilibre pied décalé (droite)", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Equilibre pied décalé (gauche)", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Equilibre pied décalé (droite)", phono: "pied décalé droite devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Equilibre pied décalé (gauche)", phono: "pied décalé gauche devant", duration: 20, dura_phono: "20 secondes",rep:false },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Travail d'appuis (joint)", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:true }, 
+    { name: "Travail d'appuis (droite)", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:true },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Travail d'appuis (joint)", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:true }, 
+    { name: "Travail d'appuis (droite)", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:true },
+    { name: "Travail d'appuis (gauche)", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 répétition",rep:true },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Travail d'appuis (joint)", phono: "Travail d'appuis pied joint", duration: 20, dura_phono: "5 répétition",rep:true }, 
+    { name: "Travail d'appuis (droite)", phono: "Travail d'appuis pied droit", duration: 20, dura_phono: "5 répétition",rep:true },
+    { name: "Travail d'appuis (gauche)", phono: "Travail d'appuis pied gauche", duration: 20, dura_phono: "5 répétition",rep:true },
+    { name: "Repos", phono: "Repos", duration: 60, dura_phono: "1 minute",rep:false },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:false },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:false },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:false },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:false },
+    { name: "Equilibre sur un pied (droit)", phono: "équilibre sur pied droit", duration: 30, dura_phono: "30 secondes",rep:false },
+    { name: "Equilibre sur un pied (gauche)", phono: "équilibre sur pied gauche", duration: 30, dura_phono: "30 secondes",rep:false },
     { name: "Ouverture d'épaule (20 mouvement par bras) x 3 ",
-        phono: "Ouverture d'épaule", duration: 240, dura_phono: "3 fois 20 mouvement par Bras",rep:1 },
-    { name: "Travaille tenue de balle",phono: "Travaille tenue de balle", duration: 240, dura_phono: "3 fois 20 mouvement par Bras ",rep:1 },
+        phono: "Ouverture d'épaule", duration: 240, dura_phono: "3 fois 20 mouvement par Bras",rep:true },
+    { name: "Travaille tenue de balle",phono: "Travaille tenue de balle", duration: 240, dura_phono: "3 fois 20 mouvement par Bras ",rep:true },
     { name: "Travail de passe (feintes puis tire) 2 series 20",
-        phono: "Travail de passe", duration: 240, dura_phono: "2 series de 20 mouvement",rep:1 },
+        phono: "Travail de passe", duration: 240, dura_phono: "2 series de 20 mouvement",rep:true },
     
    
 
@@ -243,7 +252,7 @@ function nextProprioExercise() {
     const ex = exercice_proprio[proprioIndex];
     document.getElementById("proprioName").innerText = ex.name;
     let timeLeft = ex.duration;
-    if (ex.rep == 1) {
+    if (ex.rep) {
         document.getElementById("proprioTimer").innerText = ex.dura_phono;
     } else {
         document.getElementById("proprioTimer").innerText = timeLeft + "s";
@@ -256,7 +265,7 @@ function nextProprioExercise() {
     proprioTimerInterval = setInterval(() => {
         if (proprioPaused) return;
         timeLeft--;
-        if (ex.rep == 1) {
+        if (ex.rep) {
         document.getElementById("proprioTimer").innerText = ex.dura_phono;
     }   else {
         document.getElementById("proprioTimer").innerText = timeLeft + "s";}
