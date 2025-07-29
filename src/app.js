@@ -128,7 +128,7 @@ function announceNextExercise() {
 
     const nextExercise = exercises[currentExerciseIndex] || bonusExercises[currentExerciseIndex];
     if (nextExercise) {
-        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.phono} pour ${nextExercise.dura_phonoS} `);
+        const speech = new SpeechSynthesisUtterance(`Prochain exercice: ${nextExercise.phono} pour ${nextExercise.dura_phono} `);
         speech.voice = window.speechSynthesis.getVoices().find(voice => voice.name == 'Microsoft Paul - French (France)');
         speech.lang = 'fr-FR';
         window.speechSynthesis.speak(speech);
