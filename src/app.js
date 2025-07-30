@@ -9,7 +9,7 @@ const exercises = [
     { name: "Dips",phono:"Dips", duration: 20 ,dura_phono:"10 répétitions", rep: true},
     { name: "Abdos", phono:"Abdos", duration: 60,dura_phono:"10 répétitions" , rep: true },
     { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration:60 ,dura_phono:"20 répétitions", rep: true},
-    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 90 ,dura_phono:"30 répétitions", rereppetitions: true },
+    { name: "Abdos Rotation Haut du Corps",phono:"Abdos Rotation Haut du Corps", duration: 90 ,dura_phono:"30 répétitions", rep: true },
     { name: "Abdos Toucher les Pieds",phono:"Abdos Toucher les Pieds", duration:60 ,dura_phono:"20 répétitions", rep: true },
     { name: "Abdos", phono:"Abdos", duration: 60 ,dura_phono:"10 répétitions" , rep: true },
     { name: "Superman Actif", phono:"Superman Actif", duration: 30 ,dura_phono:"30 secondes", rep: false},
