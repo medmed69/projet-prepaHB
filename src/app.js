@@ -18,10 +18,10 @@ const exercises = [
 ];
 
 const bonusExercises = [
-    { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono:30 },
-    { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:30 },
-    { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: 30 },
-    { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:30 },
+    { name: "Gainage Face", phono: "Guènage Face", duration: 30,dura_phono: "30 secondes", rep: false},
+    { name: "Gainage droite", phono: "Guènage droite", duration: 30,dura_phono:"30 secondes", rep: false },
+    { name: "Gainage gauche", phono: "Guènage gauche", duration:30,dura_phono: "30 secondes", rep: false },
+    { name: "Gainage dos", phono: "Guènage D'eau", duration: 30,dura_phono:"30 secondes", rep: false },
     
 ];
 
@@ -46,36 +46,62 @@ function startSession() {
     }
     currentBlock = 0;
     currentExerciseIndex = 0;
-    document.getElementById("settings").className  = "hidden";
-    document.getElementById("exerciseDisplay").className = "visible";
+    document.getElementById("settings").className = "hidden";
+    document.getElementById("exerciseDisplay").className = ""; // Affiche le timer et l'exercice
+    document.getElementById("backToSettingsBtn").style.display = ""; // Affiche le bouton
     document.getElementById("progressBarContainer").className = "";
     updateProgressBar();
     nextExercise();
     document.getElementById("stopSessionBtn").style.display = "";
-    document.getElementById("backHome1").style.display = "none";
+    document.getElementById("backHome1").style.display = "none"; 
 }
+
+// Handler du bouton "Retour aux settings"
+document.getElementById("backToSettingsBtn").onclick = function() {
+    if(timer){timer = clearInterval(timer);} // Stop le timer si en cours
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    } 
+    document.getElementById("exerciseName").innerText = "";
+    document.getElementById("settings").className = "";
+    document.getElementById("exerciseDisplay").className = "hidden";
+    document.getElementById("progressBarContainer").className = "hidden";
+    this.style.display = "none";
+    document.getElementById("backHome1").style.display = ""; // Réaffiche le bouton
+    if (window.timer) clearInterval(window.timer);
+};
 
 function nextExercise() {
     updateProgressBar();
-    if (exercises[currentExerciseIndex].rep || exercice_proprio[currentExerciseIndex].rep ||bonusExercises[currentExerciseIndex].rep) {
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    if (exercises[currentExerciseIndex].rep || bonusExercises[currentExerciseIndex].rep) {
         document.getElementById("skipButton").innerText = "j'ai fini les répétitions";
-    }else{
+        document.getElementById("stopButton").className = "hidden";
+    } else {
         document.getElementById("skipButton").innerText = "passer l'exercice";
-        }
-    
+        document.getElementById("stopButton").className = "";
+    }
+
     if (currentBlock < totalBlocks) {
         if (currentExerciseIndex < exercises.length) {
             const exercise = exercises[currentExerciseIndex];
             announceExercise(exercise);
             document.getElementById("exerciseName").innerText = exercise.name;
-            startTimer(exercise.duration);
+            // Correction ici : ne lance le timer que si ce n'est PAS un exercice à répétition
+            if (!exercise.rep) {
+                startTimer(exercise.duration);
+            } else {
+                document.getElementById("timer").innerText = exercise.dura_phono;
+            }
             currentExerciseIndex++;
         } else {
             currentBlock++;
             currentExerciseIndex = 0;
             nextExercise();
         }
-    } else if (currentBlock= totalBlocks && vbonus > 0) {
+    } else if (currentBlock == totalBlocks && vbonus > 0) {
         currentExerciseIndex = 0;
         nextBonusExercise();
     } else {
@@ -178,7 +204,9 @@ function updateProgressBar() {
 document.getElementById("startButton").addEventListener("click", startSession);
 document.getElementById("stopButton").onclick = function() {
     isPaused = !isPaused;
-    
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
     this.innerText = isPaused ? "Reprendre" : "Pause";
     if (!isPaused) {
         startTimer(timeLeft);
@@ -249,36 +277,54 @@ function startProprioSession() {
 }
 
 function nextProprioExercise() {
+    clearInterval(proprioTimerInterval);
+
+    // Fin de la session si tous les exercices sont faits
     if (proprioIndex >= exercice_proprio.length) {
         endProprioSession();
         return;
     }
+
     const ex = exercice_proprio[proprioIndex];
+
+    // Affichage du nom de l'exercice
     document.getElementById("proprioName").innerText = ex.name;
-    let timeLeft = ex.duration;
+
+    // Annonce vocale de l'exercice
+    announceExercise(ex);
+
+    // Gestion du bouton "skip" selon le type d'exercice
+    if (ex.rep) {
+        document.getElementById("skipProprioBtn").innerText = "j'ai fini les répétitions";
+    } else {
+        document.getElementById("skipProprioBtn").innerText = "passer l'exercice";
+    }
+
+    // Si exercice à répétition : pas de timer, pas de pause
     if (ex.rep) {
         document.getElementById("proprioTimer").innerText = ex.dura_phono;
+        document.getElementById("pauseProprioBtn").style.display = "none";
     } else {
+        // Exercice au temps : timer et pause visibles
+        let timeLeft = ex.duration;
         document.getElementById("proprioTimer").innerText = timeLeft + "s";
-    announceExercise(ex);}
-
-    clearInterval(proprioTimerInterval);
-    proprioPaused = false;
-    document.getElementById("pauseProprioBtn").innerText = "Pause";
-    document.getElementById("pauseProprioBtn").className = "resumed";
-    proprioTimerInterval = setInterval(() => {
-        if (proprioPaused) return;
-        timeLeft--;
-        if (ex.rep) {
-        document.getElementById("proprioTimer").innerText = ex.dura_phono;
-    }   else {
-        document.getElementById("proprioTimer").innerText = timeLeft + "s";}
-        if (timeLeft <= 0) {
-            clearInterval(proprioTimerInterval);
-            proprioIndex++;
-            nextProprioExercise();
-        }
-    }, 1000);
+        document.getElementById("pauseProprioBtn").style.display = "";
+        proprioPaused = false;
+        document.getElementById("pauseProprioBtn").innerText = "Pause";
+        document.getElementById("pauseProprioBtn").className = "resumed";
+        proprioTimerInterval = setInterval(() => {
+            if (proprioPaused) return;
+            if (timeLeft > 0) {
+                timeLeft--;
+                document.getElementById("proprioTimer").innerText = timeLeft + "s";
+            }
+            if (timeLeft <= 0) {
+                clearInterval(proprioTimerInterval);
+                proprioIndex++;
+                nextProprioExercise();
+            }
+        }, 1000);
+    }
 }
 
 // Bouton pause proprio
@@ -329,6 +375,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Arrêter la session renfo
     const stopSessionBtn = document.getElementById("stopSessionBtn");
     if (stopSessionBtn) stopSessionBtn.onclick = function() {
+        isPaused = true;
+        clearInterval(timer);       
         document.getElementById("settings").className = "";
         document.getElementById("exerciseDisplay").className = "hidden";
         document.getElementById("progressBarContainer").className = "hidden";
@@ -340,6 +388,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Arrêter la session proprio
     const stopProprioSessionBtn = document.getElementById("stopProprioSessionBtn");
     if (stopProprioSessionBtn) stopProprioSessionBtn.onclick = function() {
+        proprioPaused = true;
+        clearInterval(proprioTimerInterval);
         document.getElementById("proprioDisplay").classList.add("hidden");
         document.getElementById("startProprioBtn").style.display = "";
         this.style.display = "none";
